@@ -32,6 +32,7 @@ const AuthProvider = ({ children }) => {
                     username: currentAccount.username,
                     email: currentAccount.email,
                     profilephoto: currentAccount.profilephoto,
+                    profilewallpaper: currentAccount.profilewallpaper,
                     bio: currentAccount.bio,
                 });
                 setIsAuthenticated(true);

@@ -20,6 +20,7 @@ export async function createUserAccount(user) {
             password: user.password,
             username: user.username,
             profilephoto: avatarUrl,
+            profilewallpaper: user.profilewallpaper || "",
             bio: user.bio || "",
             status: user.status || ""
         });
@@ -216,10 +217,10 @@ export async function updateUser(userId, updatedData) {
             userId,
             updatedData
         );
-
         return updatedUser;
     } catch (error) {
         console.error(error);
+        throw error;
     }
 }
 
