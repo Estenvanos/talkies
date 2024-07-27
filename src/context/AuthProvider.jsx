@@ -9,7 +9,7 @@ const INITIAL_USER = {
     name: "",
     username: "",
     email: "",
-    imageUrl: "",
+    profilephoto: "",
     bio: "",
 };
 
@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
                     name: currentAccount.name,
                     username: currentAccount.username,
                     email: currentAccount.email,
-                    imageUrl: currentAccount.imageUrl,
+                    profilephoto: currentAccount.profilephoto,
                     bio: currentAccount.bio,
                 });
                 setIsAuthenticated(true);

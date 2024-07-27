@@ -10,7 +10,8 @@ export default {
       },
       fontFamily: {
         "anton": ["Anton", "sans-serif"],
-        "pacifico": ["Pacifico", "cursive"]
+        "pacifico": ["Pacifico", "cursive"],
+        "mukta": ["Mukta", "sans-serif"],
       }
     },
   },
