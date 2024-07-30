@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 const AddPhoto = ({
@@ -10,10 +10,14 @@ const AddPhoto = ({
   imageSize = 30,
   onChange,
 }) => {
+  const [fileUrl, setFileUrl] = useState(null);
+
   const onDrop = useCallback(
     (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      setFileUrl(URL.createObjectURL(file));
       if (onChange) {
-        onChange(acceptedFiles[0]);
+        onChange(file);
       }
     },
     [onChange]
@@ -43,7 +47,7 @@ const AddPhoto = ({
         className="absolute w-full h-full opacity-0 cursor-pointer"
       />
       <img
-        src="/assets/icons/add.png"
+        src={"/assets/icons/add.png"}
         alt="add photo"
         width={imageSize}
         height={imageSize}

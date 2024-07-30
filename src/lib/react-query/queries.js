@@ -43,10 +43,10 @@ export const useGetCurrentUser = () => {
 };
 
 // User hooks
-export const useUpdateUser = (userId, updatedData) => {
+export const useUpdateUser = (userId) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => updateUser(userId, updatedData),
+    mutationFn: (updatedData) => updateUser(userId, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_CURRENT_USER],
@@ -54,6 +54,7 @@ export const useUpdateUser = (userId, updatedData) => {
     },
   });
 };
+
 
 // Message hooks
 export const useGetMessages = (chatId) => {
@@ -120,14 +121,14 @@ export const useDeleteFile = () => {
 };
 
 export const useSaveUserToDB = () => {
-    const queryClient = useQueryClient();
-    
-    return useMutation({
-      mutationFn: (user) => saveUserToDB(user),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.GET_CURRENT_USER],
-        });
-      },
-    });
-  };
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (user) => saveUserToDB(user),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+      });
+    },
+  });
+};
