@@ -1,9 +1,13 @@
+import ChatsContainer from "../../components/ChatsContainer";
+
+
 const Home = () => {
   return(
-    <div className="border-2 border-red-500 flex flex-row w-full h-full">
-      
+    <div className=" flex flex-row w-full h-full">
+      <ChatsContainer />
     </div>
   );
 };
 
 export default Home;
+ 

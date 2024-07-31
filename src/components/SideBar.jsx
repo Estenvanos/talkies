@@ -17,19 +17,19 @@ const SideBar = ({ user }) => {
         </p>
       </div>
       <div className=" w-[93%] h-[55%] -mt-2 flex flex-col gap-7 place-items-center border-b border-slate-600">
-        <i className="bi bi-house text-slate-400/65 text-[3rem] transition-all duration-500 cursor-pointer hover:text-slate-100"
+        <i className="bi bi-house text-slate-400/65 text-[2.5rem] transition-all duration-500 cursor-pointer hover:text-slate-100"
         onClick={() => navigate("/")}
         ></i>
-        <i className="bi bi-plus-circle text-slate-400/65 text-[3rem] transition-all duration-500 cursor-pointer hover:text-slate-100"
+        <i className="bi bi-plus-circle text-slate-400/65 text-[2.5rem] transition-all duration-500 cursor-pointer hover:text-slate-100"
         onClick={() => navigate("/add-group")}
         ></i>
-        <i className="bi bi-gear text-slate-400/65 text-[3rem] transition-all duration-500 cursor-pointer hover:text-slate-100"
+        <i className="bi bi-gear text-slate-400/65 text-[2.5rem] transition-all duration-500 cursor-pointer hover:text-slate-100"
         onClick={() => navigate("/config")}
         ></i>
       </div>
 
       <div className="w-[93%] h-[25%] flex flex-col place-items-center">
-        <i className="bi bi-box-arrow-right text-slate-400/65 text-[3rem] py-12  transition-all duration-500 cursor-pointer hover:text-slate-100"></i>
+        <i className="bi bi-box-arrow-right text-slate-400/65 text-[2.5rem] py-12  transition-all duration-500 cursor-pointer hover:text-slate-100"></i>
       </div>
     </div>
   );

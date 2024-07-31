@@ -148,12 +148,38 @@
                 appwriteConfig.chatsCollectionId,
                 [Query.search("members", userId)]
             );
-
-            return chats.documents;
+    
+            console.log("Chats from database:", chats.documents);
+    
+            const chatDetailsPromises = chats.documents.map(async (chat) => {
+                const membersDetails = await Promise.all(
+                    chat.members.map(async (memberId) => {
+                        const user = await databases.getDocument(
+                            appwriteConfig.databaseId,
+                            appwriteConfig.usersCollectionId,
+                            memberId
+                        );
+                        return user;
+                    })
+                );
+    
+                const lastMessage = await getMessages(chat.$id).then(messages => messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0]);
+    
+                return {
+                    ...chat,
+                    membersDetails,
+                    lastMessage
+                };
+            });
+    
+            const chatDetails = await Promise.all(chatDetailsPromises);
+            console.log("Chat details with user info and last message:", chatDetails);
+            return chatDetails;
         } catch (error) {
             console.error(error);
         }
     }
+    
 
     export async function createGroup(groupData) {
         try {
