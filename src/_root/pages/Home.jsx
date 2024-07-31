@@ -1,9 +1,9 @@
-import React from 'react'
-
 const Home = () => {
-  return (
-    <div>Home</div>
-  )
-}
+  return(
+    <div className="border-2 border-red-500 flex flex-row w-full h-full">
+      
+    </div>
+  );
+};
 
-export default Home
+export default Home;

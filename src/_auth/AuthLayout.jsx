@@ -1,10 +1,11 @@
 import { Outlet, Navigate } from "react-router-dom";
+import { useUserContext } from "../context/AuthProvider";
 
 const AuthLayout = () => {
-  const isAuth = false;
+  const { isAuthenticated } = useUserContext();
   return (
     <>
-      {isAuth ? (
+      {isAuthenticated ? (
         <Navigate to="/" />
       ) : (
         <>

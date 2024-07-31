@@ -27,8 +27,8 @@ const App = () => {
 
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
-          <Route index element={<Config />} />
-          <Route index element={<AddGroup />} />
+          <Route path="/config" element={<Config />} />
+          <Route path="/add-group" element={<AddGroup />} />
         </Route>
       </Routes>
     </main>
