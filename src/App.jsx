@@ -7,8 +7,8 @@ import ProfileRoot from "./_profile/ProfileRoot"
 import ProfileConfig from "./_profile/layout/ProfileConfig"
 import RootLayout from "./_root/RootLayout"
 import Home from './_root/pages/Home'
-import AddGroup from './_root/pages/AddGroup'
 import Config from './_root/pages/Config'
+import Add from "./_root/pages/Add";
 
 
 const App = () => {
@@ -28,7 +28,8 @@ const App = () => {
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="/config" element={<Config />} />
-          <Route path="/add-group" element={<AddGroup />} />
+          <Route path="/add" element={<Add />} />
+          
         </Route>
       </Routes>
     </main>

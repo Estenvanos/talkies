@@ -24,7 +24,13 @@ const ChatsContainer = () => {
             <input type="text" placeholder='Search a Chat...' className='p-2 mx-2 w-full bg-[#292828] border border-slate-600 rounded-xl text-slate-200 font-mukta font-light focus:outline-none' />
         </div>
         <div className='h-full rounded-b-3xl overflow-y-auto mt-2 no-scrollbar'>
-        {(chats || []).map((chat, index) => <ChatPreview value={{ ...chat, currentUserId: user.$id }} key={index} />)}
+          {chats && chats.length > 0 ? (
+            chats.map((chat, index) => (
+              <ChatPreview value={{ ...chat, currentUserId: user.$id }} key={chat.$id} />
+            ))
+          ) : (
+            <div className="text-slate-400 font-mukta text-center mt-4">No chats available.</div>
+          )}
         </div>
     </div>
   );

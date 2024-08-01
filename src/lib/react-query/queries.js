@@ -15,6 +15,7 @@ import {
   deleteFile,
 } from "@/lib/appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
+import { createChat } from "../appwrite/api";
 
 // Auth hooks
 export const useCreateUserAccount = () => {
@@ -130,5 +131,17 @@ export const useSaveUserToDB = () => {
         queryKey: [QUERY_KEYS.GET_CURRENT_USER],
       });
     },
+  });
+};
+
+export const useCreateChat = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+      mutationFn: createChat,
+      onSuccess: () => {
+          queryClient.invalidateQueries({
+              queryKey: [QUERY_KEYS.GET_USER_CHATS],
+          });
+      },
   });
 };

@@ -21,7 +21,7 @@ const SideBar = ({ user }) => {
         onClick={() => navigate("/")}
         ></i>
         <i className="bi bi-plus-circle text-slate-400/65 text-[2.5rem] transition-all duration-500 cursor-pointer hover:text-slate-100"
-        onClick={() => navigate("/add-group")}
+        onClick={() => navigate("/add")}
         ></i>
         <i className="bi bi-gear text-slate-400/65 text-[2.5rem] transition-all duration-500 cursor-pointer hover:text-slate-100"
         onClick={() => navigate("/config")}
