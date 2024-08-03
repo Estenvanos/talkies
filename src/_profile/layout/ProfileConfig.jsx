@@ -4,12 +4,17 @@ import ProfileAddWallpaper from "../../components/ProfileAddWallpaper";
 import ProfileAddPhoto from "../../components/ProfileAddPhoto";
 import { useUpdateUser } from "@/lib/react-query/queries";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@chakra-ui/react";
 
 const ProfileConfig = () => {
   const { user } = useUserContext();
   const [bio, setBio] = useState(user.bio || "");
-  const [profilephoto, setProfilePhoto] = useState(user.profilephoto || "assets/icons/profile.jpg");
-  const [profilewallpaper, setCoverPhoto] = useState(user.profilewallpaper || "assets/icons/profile.jpg");
+  const [profilephoto, setProfilePhoto] = useState(
+    user.profilephoto || "assets/icons/profile.jpg"
+  );
+  const [profilewallpaper, setCoverPhoto] = useState(
+    user.profilewallpaper || "assets/icons/profile.jpg"
+  );
   const [isUpdating, setIsUpdating] = useState(false);
   const navigate = useNavigate();
   const maxChars = 100;
@@ -26,7 +31,7 @@ const ProfileConfig = () => {
   const handleSubmit = () => {
     setIsUpdating(true);
     updateUser({ profilephoto, profilewallpaper, bio });
-  };  
+  };
 
   if (isSuccess) {
     navigate("/");
@@ -48,7 +53,9 @@ const ProfileConfig = () => {
         {user.username || "Username"}
       </h1>
       <div className="border-t-2 border-slate-600 w-[50%] mt-2">
-        <p className="font-mukta text-slate-200 font-bold text-xl mt-3 ml-3">Bio</p>
+        <p className="font-mukta text-slate-200 font-bold text-xl mt-3 ml-3">
+          Bio
+        </p>
         <div className="relative">
           <textarea
             value={bio}
@@ -66,7 +73,11 @@ const ProfileConfig = () => {
         className="px-4 py-2 mt-8 w-[10%] text-lg bg-[#4295ff] text-white rounded-lg focus:outline-none transition-all duration-500 hover:bg-[#9bbbe5] font-bold"
         disabled={isUpdating}
       >
-        {isUpdating ? "Loading..." : "Done"}
+        {isUpdating ? (
+          <CircularProgress isIndeterminate color="white" trackColor="black" />
+        ) : (
+          "Done"
+        )}
       </button>
     </div>
   );

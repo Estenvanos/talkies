@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { getFilePreview, uploadFile } from "../lib/appwrite/api";
+import { CircularProgress } from "@chakra-ui/react";
 
 const ProfileAddWallpaper = ({ userId, profilewallpaper, setCoverPhoto }) => {
   const [fileUrl, setFileUrl] = useState(profilewallpaper);
@@ -50,7 +51,7 @@ const ProfileAddWallpaper = ({ userId, profilewallpaper, setCoverPhoto }) => {
         />
       </div>
       {isLoading ? (
-        <div className="flex items-center justify-center h-full">Loading...</div>
+         <CircularProgress isIndeterminate color="white" trackColor="black" size="50px" />
       ) : (
         <img
           src={fileUrl}
