@@ -26,7 +26,7 @@ const ProfileConfig = () => {
   const handleSubmit = () => {
     setIsUpdating(true);
     updateUser({ profilephoto, profilewallpaper, bio });
-  };
+  };  
 
   if (isSuccess) {
     navigate("/");

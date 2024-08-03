@@ -49,7 +49,7 @@ const SignUpForm = () => {
 
     if (isLoggedIn) {
       form.reset();
-      navigate("/");
+      navigate("/profile");
     }
   };
 

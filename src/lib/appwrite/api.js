@@ -2,7 +2,6 @@
 import { ID, Query } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 
-
 export async function createUserAccount(user) {
     try {
         const newAccount = await account.create(
@@ -20,9 +19,11 @@ export async function createUserAccount(user) {
             password: user.password,
             username: user.username,
             profilephoto: avatarUrl,
-            profilewallpaper: user.profilewallpaper || "",
+            profilewallpaper: avatarUrl || "",
             bio: user.bio || "",
-            status: user.status || ""
+            status: user.status || "",
+            friends: [],
+            chats: [],
         });
 
         return newUser;
@@ -31,7 +32,6 @@ export async function createUserAccount(user) {
         throw error;
     }
 }
-
 
 export async function saveUserToDB(user) {
     try {
@@ -78,7 +78,6 @@ export async function signInAccount(user) {
         console.error(error);
     }
 }
-
 
 export async function getCurrentUser() {
     try {
@@ -141,7 +140,12 @@ export async function getMessages(chatId) {
         console.error(error);
     }
 }
+
 export async function getUserChats(userId) {
+    if (!userId) {
+      throw new Error("User ID is missing.");
+    }
+  
     try {
       const chats = await databases.listDocuments(
         appwriteConfig.databaseId,
@@ -149,7 +153,9 @@ export async function getUserChats(userId) {
         [Query.search("members", userId)]
       );
   
-      console.log("Chats from database:", chats.documents); // Verifique se você está recebendo chats aqui
+      if (!chats.documents.length) {
+        return [];
+      }
   
       const chatDetailsPromises = chats.documents.map(async (chat) => {
         const membersDetails = await Promise.all(
@@ -163,7 +169,7 @@ export async function getUserChats(userId) {
           })
         );
   
-        const lastMessage = await getMessages(chat.$id).then(messages => 
+        const lastMessage = await getMessages(chat.$id).then(messages =>
           messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0]
         );
   
@@ -175,12 +181,41 @@ export async function getUserChats(userId) {
       });
   
       const chatDetails = await Promise.all(chatDetailsPromises);
-      console.log("Chat details with user info and last message:", chatDetails);
       return chatDetails;
     } catch (error) {
       console.error("Error fetching user chats:", error);
+      throw error;
     }
-  }
+}
+
+export async function searchUsers(term, user) {
+    if (!term || !user) {
+        throw new Error("Search term or user ID is missing.");
+    }
+
+    try {
+        // Fetch all users matching the search term
+        const response = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.usersCollectionId,
+            [Query.search("username", term),
+            Query.notEqual('$id', user.id) // Excluindo o usuário logado
+            ]
+
+        );
+
+        // Extract all friend IDs from the current user's friends list
+        const friendIds = new Set(user.friends || []);
+
+        // Filter out users who are already friends with the current user
+        const filteredUsers = response.documents.filter(user => !friendIds.has(user.$id));
+
+        return filteredUsers;
+    } catch (error) {
+        console.error("Error searching users:", error);
+        throw error;
+    }
+}
 
 
 export async function createGroup(groupData) {
@@ -197,7 +232,6 @@ export async function createGroup(groupData) {
         console.error(error);
     }
 }
-
 
 export async function getFilePreview(fileId) {
     try {
@@ -216,7 +250,6 @@ export async function getFilePreview(fileId) {
         throw error;
     }
 }
-
 
 export async function deleteFile(fileId) {
     try {
@@ -258,39 +291,107 @@ export async function uploadFile(file) {
     }
 }
 
-export const searchUsers = async (term) => {
-    try {
-        const response = await databases.listDocuments(
-            appwriteConfig.databaseId,
-            appwriteConfig.usersCollectionId,
-            [Query.search("username", term)]
-        );
-        return response.documents;
-    } catch (error) {
-        console.error("Error searching users:", error);
-        throw error;
-    }
-}; 
-
+// export const searchUsers = async (term) => {
+//     try {
+//         const response = await databases.listDocuments(
+//             appwriteConfig.databaseId,
+//             appwriteConfig.usersCollectionId,
+//             [Query.search("username", term)]
+//         );
+//         return response.documents;
+//     } catch (error) {
+//         console.error("Error searching users:", error);
+//         throw error;
+//     }
+// };
 
 export async function createChat(chatData) {
     try {
-        const chat = {
-            chatId: ID.unique(), // Gera um ID único para o chat
-            type: chatData.type,
-            members: chatData.members,
-        };
+        const chatId = ID.unique();
 
         const newChat = await databases.createDocument(
             appwriteConfig.databaseId,
             appwriteConfig.chatsCollectionId,
-            chat.chatId, // Use o chatId gerado como ID do documento
-            chat
+            chatId,
+            {
+                chatId,
+                type: chatData.type,
+                members: chatData.members,
+            }
+        );
+
+        await Promise.all(
+            chatData.members.map(async (memberId) => {
+                const userDoc = await databases.getDocument(
+                    appwriteConfig.databaseId,
+                    appwriteConfig.usersCollectionId,
+                    memberId
+                );
+
+                const updatedChats = userDoc.chats || [];
+                if (!updatedChats.includes(chatId)) {
+                    updatedChats.push(chatId);
+                }
+
+                await databases.updateDocument(
+                    appwriteConfig.databaseId,
+                    appwriteConfig.usersCollectionId,
+                    memberId,
+                    { chats: updatedChats }
+                );
+            })
         );
 
         return newChat;
     } catch (error) {
         console.error("Error creating chat:", error);
+        throw error;
+    }
+}
+
+export async function addFriend({ userId, friendId }) {
+    try {
+        // Atualiza o documento do usuário logado para incluir o friendId
+        const userDoc = await databases.getDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.usersCollectionId,
+            userId
+        );
+
+        const updatedFriendsUser = userDoc.friends || [];
+        if (!updatedFriendsUser.includes(friendId)) {
+            updatedFriendsUser.push(friendId);
+        }
+
+        await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.usersCollectionId,
+            userId,
+            { friends: updatedFriendsUser }
+        );
+
+        // Atualiza o documento do amigo para incluir o userId
+        const friendDoc = await databases.getDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.usersCollectionId,
+            friendId
+        );
+
+        const updatedFriendsFriend = friendDoc.friends || [];
+        if (!updatedFriendsFriend.includes(userId)) {
+            updatedFriendsFriend.push(userId);
+        }
+
+        await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.usersCollectionId,
+            friendId,
+            { friends: updatedFriendsFriend }
+        );
+
+        return { status: 'success' };
+    } catch (error) {
+        console.error("Error adding friend:", error);
         throw error;
     }
 }

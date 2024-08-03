@@ -1,8 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useSignOutAccount } from "../lib/react-query/queries";
+
 const SideBar = ({ user }) => {
   const navigate = useNavigate();
+  const {mutate: signOut , isSuccess} = useSignOutAccount()
 
+  const handleSignOut = () => {
+    signOut()
+    navigate("/sign-in")
+    }
   return (
     <div className="h-full w-[10%] bg-[#292828] rounded-3xl shadow-2xl border border-slate-600 flex flex-col place-items-center">
       <div className=" place-items-center justify-center flex flex-col my-4 border-b border-slate-600 w-[93%] pb-4">
@@ -29,7 +36,9 @@ const SideBar = ({ user }) => {
       </div>
 
       <div className="w-[93%] h-[25%] flex flex-col place-items-center">
-        <i className="bi bi-box-arrow-right text-slate-400/65 text-[2.5rem] py-12  transition-all duration-500 cursor-pointer hover:text-slate-100"></i>
+        <i
+        onClick={handleSignOut}
+         className="bi bi-box-arrow-right text-slate-400/65 text-[2.5rem] py-12  transition-all duration-500 cursor-pointer hover:text-slate-100"></i>
       </div>
     </div>
   );

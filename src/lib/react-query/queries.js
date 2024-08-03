@@ -15,7 +15,7 @@ import {
   deleteFile,
 } from "@/lib/appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
-import { createChat } from "../appwrite/api";
+import { addFriend, createChat } from "../appwrite/api";
 
 // Auth hooks
 export const useCreateUserAccount = () => {
@@ -83,7 +83,7 @@ export const useGetUserChats = (userId) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_USER_CHATS, userId],
     queryFn: () => getUserChats(userId),
-    enabled: !!userId,
+    enabled: !!userId, // Ensure query is enabled only if userId is valid
   });
 };
 
@@ -143,5 +143,24 @@ export const useCreateChat = () => {
               queryKey: [QUERY_KEYS.GET_USER_CHATS],
           });
       },
+  });
+};
+
+export const useAddFriend = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ userId, friendId }) => {
+      await addFriend({ userId, friendId });
+      const chatData = {
+        type: 'private',
+        members: [userId, friendId],
+      };
+      return createChat(chatData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEYS.GET_USER_CHATS]);
+      queryClient.invalidateQueries([QUERY_KEYS.GET_CURRENT_USER]);
+    },
   });
 };

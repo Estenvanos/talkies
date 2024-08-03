@@ -10,6 +10,7 @@ const INITIAL_USER = {
     username: "",
     email: "",
     profilephoto: "",
+    profilewallpaper: "",
     bio: "",
 };
 
@@ -34,6 +35,9 @@ const AuthProvider = ({ children }) => {
                     profilephoto: currentAccount.profilephoto,
                     profilewallpaper: currentAccount.profilewallpaper,
                     bio: currentAccount.bio,
+                    chats: currentAccount.chats,
+                    friends: currentAccount.friends,
+                    status: currentAccount.status
                 });
                 setIsAuthenticated(true);
                 return true;
@@ -48,15 +52,14 @@ const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        if (
-            localStorage.getItem("cookieFallback") === "[]" ||
-            localStorage.getItem("cookieFallback") === null
-        ) {
-            navigate("/sign-in");
-        } else {
+        const cookieFallback = localStorage.getItem("cookieFallback");
+        if (cookieFallback && cookieFallback !== "[]") {
             checkAuthUser();
+        } else {
+            setIsAuthenticated(false);
         }
     }, []);
+
 
     return (
         <AuthContext.Provider value={{ user, isLoading, isAuthenticated, checkAuthUser }}>

@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { searchUsers } from "../lib/appwrite/api";
 import UserPreview from "./UserPreview";
-
+import { useUserContext } from '../context/AuthProvider';
 
 const AddFriend = ({ visible, setVisible }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const ref = useRef();
+  const { user } = useUserContext();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -24,7 +25,11 @@ const AddFriend = ({ visible, setVisible }) => {
     const fetchSearchResults = async () => {
       if (searchTerm) {
         try {
-          const results = await searchUsers(searchTerm);
+          if (!user || !user.id) {
+            console.error("User object:", user); // Log user object for debugging
+            throw new Error("User ID is missing.");
+          }
+          const results = await searchUsers(searchTerm, user);
           setSearchResults(results);
         } catch (error) {
           console.error("Error fetching search results:", error);
@@ -35,13 +40,13 @@ const AddFriend = ({ visible, setVisible }) => {
     };
 
     fetchSearchResults();
-  }, [searchTerm]);
+  }, [searchTerm, user]);
 
   return (
     <div
       ref={ref}
       className={`${
-        visible ? "w-[60%] h-[89%] " : "w-[40%] h-[50%]"
+        visible ? "w-[60%] h-[89%]" : "w-[40%] h-[50%]"
       } bg-[#292828] border border-slate-600 mx-9 rounded-3xl shadow-2xl flex flex-col place-content-center place-items-center transition-all duration-500`}
       onClick={() => setVisible(true)}
     >
