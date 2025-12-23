@@ -21,7 +21,7 @@ It leverages **React**, **Vite**, **Appwrite** for backend services, and **TanSt
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React + TypeScript |
+| Frontend | React + JS |
 | Bundler | Vite |
 | Backend | Appwrite |
 | Data Fetching | TanStack Query |
